@@ -24,11 +24,11 @@
 	<preference name="DisallowOverscroll"         value="true"/>
     <preference name="webviewbounce"              value="false" />
     <preference name="prerendered-icon"           value="true" />
-    <preference name="stay-in-webview"            value="false" />          <!-- ios: external links should open in the default browser, 'true' would use the webview the app lives in -->
+    <preference name="stay-in-webview"            value="false" />
     <preference name="ios-statusbarstyle"         value="black-opaque" />
     <preference name="detect-data-types"          value="true" />
     <preference name="exit-on-suspend"            value="false" />
-    <preference name="show-splash-screen-spinner" value="true" />           <!-- ios: if set to false, the spinner won't appear on the splash screen during app loading -->
+    <preference name="show-splash-screen-spinner" value="true" />
     <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="android-installLocation"    value="auto" />
     <preference name="android-minSdkVersion"      value="7" />
@@ -43,7 +43,7 @@
 
 	<plugin name="phonegap-plugin-push" />
 	<plugin name="cordova-plugin-x-socialsharing" />
-	<plugin name="https://bitbucket.org/kingsquare/cordova-background-audio.git" />
+	<plugin name="https://github.com/AubreyHewes/cordova-background-audio.git" />
 
     <icon src="icon.png" />
     <icon src="res/icon/android/icon-36-ldpi.png"   gap:platform="android"	gap:qualifier="ldpi" />
