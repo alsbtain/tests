@@ -2,12 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>الرئيسية</title>
+  <title>استماع مقطع</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0" /> 
   <link rel="stylesheet" media="all" href="css/style.css" type="text/css">
   <link rel="stylesheet" media="all" href="theme/customize.css" type="text/css">
   <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
   <script type="text/javascript" charset="utf-8" src="settings.js"></script>
+  <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
   <script type="text/javascript" src="js/PushNotification.js"></script>
   
   <script type="text/javascript">	
@@ -18,18 +19,8 @@
     });
     return vars;
 	}
-		
-	function showImg(img){
-		var myImg = "";
-		if(img==""){
-		myImg = "theme/images/thumb.jpg";
-		}else{
-		myImg = img;
-		}
-		return myImg;
-	}
   </script>
-
+  
 </head>
 
 <body>
@@ -59,14 +50,11 @@
   </div>
  
 <script src="js/jquery.min.js"></script>
-<script src="galleria/galleria-1.4.2.min.js"></script>
 <script type="text/javascript">
 
-var pushNotification;
+	var pushNotification;
 	
 function onDeviceReady() {
-
-	navigator.splashscreen.hide();
 
 	arrayLength = internalMenu.title.length;
 	sbMenu = '';
@@ -101,61 +89,12 @@ function onDeviceReady() {
 		
 		// End of Push Notifications DeviceReady
 		
-		$.getScript(siteURL + 'external/index_mobile15.sb.php?id=' + getUrlVars()["id"] + '&c=' + getUrlVars()["c"] + '&page=' + getUrlVars()["page"] + '&articles=' + getUrlVars()["articles"], function(){
-					
-				var output = "";
-				
-				if(ads.length > 0 && localStorage.getItem('ad_' + ads[0].id) != '1'){
-				
-				output += '<div id="ads">' + ads[0].msg + '<a href="#" onclick="this.parentNode.style.display=\'none\';localStorage.setItem(\'ad_' + ads[0].id + '\',\'1\');return false;">[موافق]</a></div>';
-				
-				}
-				
-				output += '<h2 class="underline">جديدنا</h2>';
-				
-				for (i = 0; i < latest.length; i++) {
-					output += '<article class="underline"><div class="post-preview"><a href="' + latest[i].url + '"><img src="' + showImg(latest[i].img) + '" /></a></div><div class="post-content"><h2><a href="' + latest[i].url + '">' + latest[i].title + '</a></h2><p>' + latest[i].name + '</p><div class="date" style="width: 100px"><span style="width: 100%; text-align: center;">' + latest[i].date + '</span></div></div><div class="clear"></div></article>';
-				} 
-				
-				output += '<br />';
-				
-				for (i = 0; i < cats.length; i++) {
-				
-					output += '<h2 class="underline">' + cats[i].title + '</h2>';
-				
-					for (m = 0; m < cats[i].subs.length; m++) {
-						
-						output += '<article class="underline"><div class="post-preview"><a href="' + cats[i].subs[m].url + '"><img src="' + showImg(cats[i].subs[m].img) + '" /></a></div><div class="post-content"><h2><a href="' + cats[i].subs[m].url + '">' + cats[i].subs[m].title + '</a></h2>';
-						
-						if(cats[i].subs[m].description != ""){ output += '<p>' + cats[i].subs[m].description + '</p>'; }
-						
-						output += '</div><div class="clear"></div></article>';
-					}
-					
-					output += '<br />';
-				
-				}
-
-				if(gallery.length > 0){
-				
-					output += '<h2 class="underline">جديد الصور</h2><div id="galleria"></div>';
-				
-				}
-				
-				document.getElementById('mainContent').innerHTML = output;
-				
-				if(gallery.length > 0){
-				
-					// Load the classic theme
-					Galleria.loadTheme("galleria/galleria.classic.min.js");
-
-					// Initialize Galleria
-					Galleria.run("#galleria", {
-					dataSource: gallery,
-					showCounter: false
-				});	}
-				
-			});
+		var headID = document.getElementsByTagName("head")[0];         
+		var newScript = document.createElement('script');  
+		newScript.type = 'text/javascript';
+		newScript.charset = 'utf-8';  
+		newScript.src = siteURL + 'external/media_mobile14.sb.php?version=150&id=' + getUrlVars()["id"];  
+		headID.appendChild(newScript);  
 		
 		}		
 	}
@@ -185,24 +124,85 @@ function onDeviceReady() {
    		$('.options li:last-child').removeClass('active');
    });
    
-/* window.onerror = function(msg, url, linenumber) {
+var folderName = 'Download';
+var fileName;
+var mediaID;
+var mediaIDs;
+
+function downloadFile() {
+
+mediaIDs = ';' + localStorage.getItem("downloaded") + ';';
+if(mediaIDs.indexOf(';' + getUrlVars()["id"] + ';') > -1){
+
+	document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/cross.png" /> تم تحميل هذا الملف مسبقاً!';
+
+}else{
+
+	document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/loading.gif" /> جاري التحميل...';
+	
+    //step to request a file system 
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, fileSystemSuccess, fileSystemFail);
+
+    function fileSystemSuccess(fileSystem) {
+        var download_link = encodeURI(sbURL);
+        fileName = download_link.substr(download_link.lastIndexOf('/') + 1); //Get filename of URL
+        var directoryEntry = fileSystem.root; // to get root path of directory
+        directoryEntry.getDirectory(folderName, {
+            create: true,
+            exclusive: false
+        }, onDirectorySuccess, onDirectoryFail); // creating folder in sdcard
+        var rootdir = fileSystem.root;
+        var fp = fileSystem.root.toNativeURL(); // Returns Fullpath of local directory
+
+        fp = fp + folderName + "/" + fileName; // fullpath and name of the file which we want to give
+        // download function call
+        filetransfer(download_link, fp);
+    }
+
+    function onDirectorySuccess(parent) {
+        // Directory created successfuly
+    }
+
+    function onDirectoryFail(error) {
+        //Error while creating directory
+        //alert("Unable to create new directory: " + error.code);
+		document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/cross.png" /> حدث خطأ أثناء التحميل!';
+    }
+
+    function fileSystemFail(evt) {
+        //Unable to access file system
+        //alert(evt.target.error.code);
+		document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/cross.png" /> حدث خطأ أثناء التحميل!';
+    }
+}}
+
+function filetransfer(download_link, fp) {
+    var fileTransfer = new FileTransfer();
+    // File download function with URL and local path
+    fileTransfer.download(download_link, fp,
+        function(entry) {
+            //alert("download complete: " + entry.fullPath);
+			mediaID = getUrlVars()["id"];
+			localStorage.setItem("downloaded", mediaID + ';' + localStorage.getItem("downloaded"));
+			localStorage.setItem("mediaTitle" + mediaID, output_title);
+			localStorage.setItem("mediaName" + mediaID, output_name);
+			localStorage.setItem("mediaImg" + mediaID, output_profilePic);
+			localStorage.setItem("mediaLink" + mediaID, fp);
+			localStorage.setItem("mediaDate" + mediaID, output_date);
+			document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/tick.png" /> تم التحميل!';
+        },
+        function(error) {
+            //Download abort errors or download failed errors
+            //alert("download error source " + error.source);
+			document.getElementById('downloadMSG').innerHTML = '<img class="noborder" src="theme/images/cross.png" /> حدث خطأ أثناء التحميل!';
+        }
+    );
+}
+
+window.onerror = function(msg, url, linenumber) {
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
     return true;
-} */
-
+}
 </script>
-<style>
-	.galleria-theme-classic .galleria-thumbnails-container{direction: ltr !important;}
-	.galleria-theme-classic .galleria-carousel .galleria-thumbnails-list{direction: ltr !important;}
-
-	/* This rule is read by Galleria to define the gallery height: */
-	#galleria{height:90vh;}
-	
-	.shareButton{
-	position: fixed;
-	top: 12px;
-	left: 12px;
-	}
-</style>
 </body>
 </html>
