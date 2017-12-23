@@ -13,12 +13,61 @@
 		</style>
     </head>
     <body>
+
+		<form id="sendForm" onsubmit="return sSend();">
+			<input type="text" id="msg" placeholder="Message" />
+			<br />
+			<input type="submit" value="Send Message" />
+		</form>
+		
         <script type="text/javascript" src="cordova.js"></script>
 		<script>
+			function sSend(){
+				arrayUUID.forEach(function(element) {
+					wsserver.send({'uuid': element}, document.getElementById('msg').value);
+				});
+				return false;
+			}
+			
 			function onDeviceReady() {
 
 				alert('onDeviceReady!');
-				networkinterface.getWiFiIPAddress(function (ip) { alert(ip); });
+				networkinterface.getWiFiIPAddress(function (ip) { localIP = ip; }, function(err) { localIP = err; });
+				alert(localIP);
+				
+				arrayUUID = [];
+
+				wsserver = cordova.plugins.wsserver;
+				wsserver.start(0, {
+					// WebSocket Server handlers
+					'onFailure' :  function(addr, port, reason) {
+						alert("Stopped listening on " + localIP + ":" + port + ". Reason: " + reason);
+					},
+					// WebSocket Connection handlers
+					'onOpen' : function(conn) {
+						/* conn: {
+						 'uuid' : '8e176b14-a1af-70a7-3e3d-8b341977a16e',
+						 'remoteAddr' : '192.168.1.10',
+						 'acceptedProtocol' : 'my-protocol-v1',
+						 'httpFields' : {...},
+						 'resource' : '/?param1=value1&param2=value2'
+						 } */
+						alert("A user connected from " + conn.remoteAddr);
+						arrayUUID.push(conn.uuid);
+					},
+					'onMessage' : function(conn, msg) {
+						alert(conn.remoteAddr + ': ' + msg);
+					},
+					'onClose' : function(conn, code, reason, wasClean) {
+						alert("A user disconnected from " + conn.remoteAddr);
+						arrayUUID = arrayUUID.filter(a => a !== conn.uuid);
+					},
+				}, function onStart(addr, port) {
+					alert("Listening on " + localIP + ":" + port);
+					
+				}, function onDidNotStart(reason) {
+					alert("Did not start. Reason: " + reason);
+				});
 				
 			}
 			

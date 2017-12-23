@@ -19,7 +19,7 @@
         <icon density="xxxhdpi" src="www/res/icon/android/192.png" />
 		<!--<plugin spec="https://github.com/knowledgecode/WebSocket-for-Android.git" />-->
     </platform>
-	<!--<plugin spec="https://github.com/becvert/cordova-plugin-websocket-server.git" />-->
+	<plugin spec="https://github.com/becvert/cordova-plugin-websocket-server.git" />
 	<plugin name="cordova-plugin-networkinterface" source="npm" />
 	<plugin name="cordova-plugin-whitelist" version="1" />
     <allow-intent href="http://*" />
