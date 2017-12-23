@@ -8,6 +8,7 @@
         Alsbtain Development Team
     </author>
     <content src="index.html" />
+	<preference name="android-targetSdkVersion" value="16"/>
     <access origin="*" />
     <icon src="icon.png" />
     <platform name="android">
