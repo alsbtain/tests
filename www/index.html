@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-        <title>Communicator</title>
+        <title>cDebug</title>
 		<style>
 			input {
 				height: 40px;
@@ -13,9 +13,24 @@
 		</style>
     </head>
     <body>
-		<form action="server.html"><input type="submit" value="Server"></form>
-		<br />
-		<form action="client.html"><input type="submit" value="Client"></form>
+
+		<form id="sendForm" onsubmit="return sSend();">
+			<input type="text" id="msg" placeholder="Message" />
+			<br />
+			<input type="submit" value="Send Message" />
+		</form>
+		
         <script type="text/javascript" src="cordova.js"></script>
+		<script>
+			function onDeviceReady() {
+
+				alert('onDeviceReady!');
+				networkinterface.getWiFiIPAddress(function (ip) { localIP = ip; }, function(err) { localIP = err; });
+				alert(localIP);
+				
+			}
+			
+			document.addEventListener("deviceready", onDeviceReady, false);
+		</script>
     </body>
 </html>
