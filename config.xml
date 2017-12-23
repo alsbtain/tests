@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.Alsbtain.Communicator" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" versionCode = "1">
+    <name>Communicator</name>
+    <description>
+        An app that communicates wirelessly
+    </description>
+    <author email="info@alsbtain.net" href="http://alsbtain.net">
+        Alsbtain Development Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <icon src="icon.png" />
+    <platform name="android">
+        <icon density="ldpi" src="www/res/icon/android/36.png" />
+        <icon density="mdpi" src="www/res/icon/android/48.png" />
+        <icon density="hdpi" src="www/res/icon/android/72.png" />
+        <icon density="xhdpi" src="www/res/icon/android/96.png" />
+        <icon density="xxhdpi" src="www/res/icon/android/144.png" />
+        <icon density="xxxhdpi" src="www/res/icon/android/192.png" />
+		<plugin spec="https://github.com/knowledgecode/WebSocket-for-Android.git" />
+    </platform>
+	<plugin spec="https://github.com/becvert/cordova-plugin-websocket-server.git" />
+	<plugin name="cordova-plugin-networkinterface" source="npm" />
+	<plugin name="cordova-plugin-whitelist" version="1" />
+    <allow-intent href="http://*" />
+	<allow-intent href="ws://*" />
+</widget>

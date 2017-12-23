@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Communicator Client</title>
+		<style>
+			input {
+				height: 40px;
+				font-size: 20px;
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<form onsubmit="return cConnect();">
+			<input type="text" id="gameIP" placeholder="Game IP" />
+			<br />
+			<input type="submit" value="Connect" />
+		</form>
+		<br />
+		<form id="sendForm" onsubmit="return cSend();" style="display: none;">
+			<input type="text" id="msg" placeholder="Message" />
+			<br />
+			<input type="submit" value="Send Message" />
+		</form>
+	
+	<script type="text/javascript" src="cordova.js"></script>
+	<script>
+		function cConnect(){
+			socket = new WebSocket('ws://' + document.getElementById('gameIP').value);
+			socket.onopen = function(event) {
+				document.getElementById('sendForm').style.display = 'inline';
+
+				socket.onmessage = function(event) { 
+					console.log('Client received a message', event); 
+					alert(event.data);
+				}; 
+
+				socket.onclose = function(event) { 
+					console.log('Client notified socket has closed', event); 
+				}; 
+			};
+			
+			return false;
+		}
+		
+		function cSend(){
+			socket.send(document.getElementById('msg').value); 
+			return false;
+		}
+	</script>
+
+    </body>
+</html>
