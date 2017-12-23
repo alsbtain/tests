@@ -13,20 +13,12 @@
 		</style>
     </head>
     <body>
-
-		<form id="sendForm" onsubmit="return sSend();">
-			<input type="text" id="msg" placeholder="Message" />
-			<br />
-			<input type="submit" value="Send Message" />
-		</form>
-		
         <script type="text/javascript" src="cordova.js"></script>
 		<script>
 			function onDeviceReady() {
 
 				alert('onDeviceReady!');
-				networkinterface.getWiFiIPAddress(function (ip) { localIP = ip; }, function(err) { localIP = err; });
-				alert(localIP);
+				networkinterface.getWiFiIPAddress(function (myIP) { alert(myIP); });
 				
 			}
 			
